@@ -5,7 +5,8 @@ import android.content.Context;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
-
+import android.app.PictureInPictureParams;
+import android.util.Rational;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -31,10 +32,17 @@ public class PictureInPictureModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start() {
+    public void start(int width, int height) {
         final Activity activity = getCurrentActivity();
         if(hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)){
-            activity.enterPictureInPictureMode();
+
+            Rational rational = new Rational(width, height);
+            PictureInPictureParams params =
+            new PictureInPictureParams.Builder()
+            .setAspectRatio(rational)
+            .build();
+
+            activity.enterPictureInPictureMode(params);
             return;
         } else {
             Context context = getReactApplicationContext();
